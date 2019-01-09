@@ -1,0 +1,68 @@
+parameters:
+#    sylius.form.type.customer_guest.validation_groups: [~]
+
+services:
+    app.shipping_calculator.per_weight_rate:
+        class: AppBundle\Component\Shipping\Calculator\PerWeightRateCalculator
+        tags:
+            -  { name: sylius.shipping_calculator, calculator: per_weight_rate, form_type: AppBundle\Form\Type\Shipping\Calculator\PerWeightRateConfigurationType, label: 'sylius.form.shipping_calculator.per_weight_rate_configuration.label'}
+
+    app.form.type.shipping_calculator.per_weight_rate:
+        class: AppBundle\Form\Type\Shipping\Calculator\PerWeightRateConfigurationType
+        arguments:
+            - '@sylius.context.currency'
+        tags:
+            - { name: form.type}
+
+    app.block_event_listener.admin.layout.javascripts:
+        class: Sylius\Bundle\UiBundle\Block\BlockEventListener
+        arguments:
+            - '@@App/Admin/_javascripts.html.twig'
+        tags:
+            - { name: kernel.event_listener, event: sonata.block.event.sylius.admin.layout.javascripts, method: onBlockEvent }
+
+    app.form.type.admin_new_order.order_item:
+        class: AppBundle\Form\Type\Order\Admin\AdminOrderItemType
+        arguments:
+            - '@sylius.context.currency'
+        tags:
+            - { name: form.type}
+
+    app.form.type.admin_new_order.main_form:
+        class: AppBundle\Form\Type\Order\Admin\AdminNewOrderType
+        arguments:
+            - '@sylius.repository.customer'
+            - '@sylius.context.currency'
+        tags:
+            - { name: form.type}
+
+    app.listener.admin.menu_builder:
+        class: AppBundle\Menu\AdminOrderMenuListener
+        tags:
+            - { name: kernel.event_listener, event: sylius.menu.admin.order.show, method: addAdminMenuItems }
+
+    app.listener.admin.order_notified:
+        public: true
+        class: AppBundle\EmailManager\NotifyAdminEmailManager
+        arguments:
+            - '@sylius.email_sender'
+            - '%mail_manager_email%'
+
+
+
+
+    app.form.extension.type.taxon:
+        class: AppBundle\Form\Extension\TaxonTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: Sylius\Bundle\TaxonomyBundle\Form\Type\TaxonType  }
+
+    app.form.extension.type.contact:
+        class: AppBundle\Form\Extension\ContactTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\ContactType  }
+
+    app.form.extension.type.customerRegistration:
+        class: AppBundle\Form\Extension\RegisterTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: Sylius\Bundle\CoreBundle\Form\Type\Customer\CustomerRegistrationType  }
+

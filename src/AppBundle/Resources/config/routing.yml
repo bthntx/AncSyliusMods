@@ -1,0 +1,5 @@
+sylius_shop_page:
+     path: /{page}
+     methods: [GET]
+     defaults:
+         _controller: AppBundle:ShopPages:show

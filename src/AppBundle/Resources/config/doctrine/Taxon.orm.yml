@@ -1,0 +1,14 @@
+AppBundle\Entity\Taxon:
+    type: entity
+    table: sylius_taxon
+    manyToMany:
+        linkedTaxons:
+          targetEntity: AppBundle\Entity\Taxon
+          joinTable:
+            name: sylius_taxon_linked
+            joinColumns:
+              base_taxon:
+                referencedColumnName: id
+            inverseJoinColumns:
+              linked_taxon:
+                referencedColumnName: id

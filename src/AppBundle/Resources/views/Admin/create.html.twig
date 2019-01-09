@@ -1,0 +1,54 @@
+{% extends 'SyliusAdminBundle::layout.html.twig' %}
+
+{% import 'SyliusUiBundle:Macro:headers.html.twig' as headers %}
+{% import 'SyliusUiBundle:Macro:buttons.html.twig' as buttons %}
+
+{% block title %}{{ 'sylius.ui.create_order'|trans  }} {{ parent() }}{% endblock %}
+
+{% form_theme form '@App/Admin/theme.html.twig' %}
+
+{% block content %}
+
+
+    {{ form_start(form, {'action': path('sylius_admin_order_new_save',{'customerId':app.request.get('customerId')}), 'attr': {'class': 'ui loadable form', 'novalidate': 'novalidate'}}) }}
+    <div class="ui segment">
+        <input type="hidden" name="_method" value="PUT" />
+
+        {{ sonata_block_render_event('sylius.admin.order.update.form', {'resource': resource}) }}
+
+        <div class="product-search ui fluid multiple search selection dropdown" data-url="{{ path('sylius_admin_product_variant') }}">
+            {{ form_widget(form.productSearch, {'attr': {'class' : 'autocomplete'}}) }}
+            <i class="dropdown icon"></i>
+            <div class="default text">{{'sylius.ui.select_products'|trans}}</div>
+            <div class="menu">
+            </div>
+        </div>
+
+        <div class="ui segment">
+        {{ form_row(form.itemsCollection) }}
+        </div>
+        <div class="ui raised segment">
+            {{ form_row(form.shipment_price) }}
+            {{ form_row(form.shipment_override) }}
+        </div>
+        <div class="ui  segment">
+            {{ form_row(form.discount) }}
+        </div>
+        <div class="ui  segment">
+            {{ form_row(form.notes) }}
+        </div>
+
+        <div class="ui raised segment">
+            {{ form_row(form.shipment_type) }}
+            {{ form_row(form.payment_type) }}
+        </div>
+        <div class="ui segment">
+        {{ form_row(form.shippingAddress) }}
+        </div>
+        {{ form_row(form.customer) }}
+        {{ form_row(form._token) }}
+        {% include '@SyliusUi/Form/Buttons/_update.html.twig' with {'paths': {'cancel': path('sylius_admin_order_index')}} %}
+    </div>
+    {{ form_end(form, {'render_rest': false}) }}
+
+{% endblock %}
